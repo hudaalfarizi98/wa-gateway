@@ -34,7 +34,19 @@
   <!-- Footer -->
   <%- include('partials/footer') %>
 </div>
+
+<!-- Load jQuery sebelum AdminLTE -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- AdminLTE App JS -->
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+<!-- Custom Scripts -->
+<script>
+  $(document).ready(function () {
+    console.log("jQuery berhasil dimuat:", typeof $.fn !== 'undefined');
+  });
+</script>
+
 </body>
 </html>
