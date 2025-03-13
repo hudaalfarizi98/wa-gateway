@@ -9,8 +9,14 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const AUTH_TOKEN = "your-secret-token"; // Ganti dengan token rahasia yang aman
+
 const app = express();
 const port = 3000;
+
+// Middleware untuk parsing JSON dan form data
+app.use(express.json()); // <-- Tambahkan ini agar bisa menerima JSON
+app.use(express.urlencoded({ extended: true }));
 
 // Konfigurasi express-ejs-layouts
 app.use(expressLayouts);
@@ -121,6 +127,22 @@ function isAuthenticated(req, res, next) {
   }
   res.redirect('/login');
 }
+
+// Middleware untuk verifikasi Bearer Token
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized, token is missing' });
+  }
+
+  const token = authHeader.split(' ')[1]; // Ambil token setelah "Bearer "
+  if (token !== AUTH_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized, invalid token' });
+  }
+
+  next(); // Lanjutkan ke route handler jika token valid
+};
 
 // Routes untuk Login
 app.get('/login', (req, res) => {
@@ -429,21 +451,35 @@ app.get('/chat/:id', isAuthenticated, (req, res) => {
 });
 
 
-// Route untuk mengirim pesan individual (hanya untuk user yang sudah login)
-app.post('/send', isAuthenticated, (req, res) => {
+app.post('/send', verifyToken, (req, res) => {
   const { number, message } = req.body;
+
+  if (!number || !message) {
+    return res.status(400).json({ error: 'Nomor dan pesan harus diisi' });
+  }
+
   const chatId = number.includes('@c.us') ? number : `${number}@c.us`;
+
   client.sendMessage(chatId, message)
     .then(response => {
-      db.run(`INSERT INTO message_logs (phone, message, status) VALUES (?, ?, ?)`, [number, message, 'success']);
-      res.redirect('/?status=success');
+      db.run("INSERT INTO message_logs (phone, message, status) VALUES (?, ?, ?)", [number, message, 'success'], (err) => {
+        if (err) {
+          console.error('Gagal menyimpan log pesan:', err);
+        }
+      });
+      res.json({ status: 'success', response });
     })
     .catch(err => {
       console.error('Gagal mengirim pesan:', err);
-      db.run(`INSERT INTO message_logs (phone, message, status) VALUES (?, ?, ?)`, [number, message, 'error']);
-      res.redirect('/?status=error');
+      db.run("INSERT INTO message_logs (phone, message, status) VALUES (?, ?, ?)", [number, message, 'error'], (err) => {
+        if (err) {
+          console.error('Gagal menyimpan log pesan:', err);
+        }
+      });
+      res.status(500).json({ status: 'error', error: err.message });
     });
 });
+
 
 // Jalankan server Express
 app.listen(port, () => {
