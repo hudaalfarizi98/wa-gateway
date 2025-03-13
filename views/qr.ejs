@@ -1,0 +1,37 @@
+<!-- views/qr.ejs -->
+<% if (!loggedInInfo) { %>
+    <!-- Auto refresh setiap 5 detik jika belum login -->
+    <meta http-equiv="refresh" content="5">
+  <% } %>
+  
+  <div class="login-box">
+    <div class="card card-outline card-primary">
+      <div class="card-header text-center">
+        <a href="/" class="h5"><b>WhatsApp</b>Gateway</a>
+      </div>
+      <div class="card-body">
+        <% if (qrCodeData) { %>
+          <p class="login-box-msg">Scan QR Code untuk Login</p>
+          <div class="text-center">
+            <img src="<%= qrCodeData %>" alt="QR Code" style="max-width: 100%; height: auto;">
+          </div>
+        <% } else if (loggedInInfo) { %>
+          <p class="login-box-msg">Login berhasil!</p>
+          <div class="text-center">
+            <!-- Tampilkan foto profil -->
+            <img src="<%= loggedInInfo.profilePic %>" alt="Foto Profil" style="width:150px; height:150px; border-radius:50%;">
+          </div>
+          <div class="mt-3 text-center">
+            <h4><%= loggedInInfo.pushname || 'Nama tidak tersedia' %></h4>
+            <p>Nomor: <%= loggedInInfo.wid.user %></p>
+          </div>
+        <% } else { %>
+          <p class="login-box-msg">Informasi login tidak tersedia.</p>
+        <% } %>
+        <div class="mt-3 text-center">
+          <a href="/" class="btn btn-primary">Kembali ke Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  

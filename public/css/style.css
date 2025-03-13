@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 2rem;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+form div {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    background-color: #25D366;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}

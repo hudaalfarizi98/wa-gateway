@@ -1,0 +1,37 @@
+<!-- views/chats.ejs -->
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Daftar Chat Aktif</h3>
+  </div>
+  <div class="card-body table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>ID Chat</th>
+          <th>Nama Chat</th>
+          <th>Jumlah Pesan Belum Dibaca</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (chats && chats.length) { %>
+          <% chats.forEach(function(chat) { %>
+            <tr>
+              <td><%= chat.id._serialized %></td>
+              <td><%= chat.name %></td>
+              <td><%= chat.unreadCount %></td>
+              <td>
+                <!-- Tombol untuk pindah ke halaman detail chat -->
+                <a href="/chat/<%= chat.id._serialized %>" class="btn btn-sm btn-primary">Lihat Chat</a>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr>
+            <td colspan="5" class="text-center">Tidak ada chat aktif.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

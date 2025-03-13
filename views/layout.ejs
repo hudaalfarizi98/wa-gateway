@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <!-- AdminLTE CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Custom CSS -->
+  <!-- <link rel="stylesheet" href="/css/style.css"> -->
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Header -->
+  <%- include('partials/header') %>
+  <!-- Sidebar -->
+  <%- include('partials/sidebar', { activePage: activePage }) %>
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <!-- Content Header -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <h1><%= title %></h1>
+      </div>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+         <%- body %>
+      </div>
+    </section>
+  </div>
+  <!-- Footer -->
+  <%- include('partials/footer') %>
+</div>
+<!-- AdminLTE App JS -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!-- views/phonebook.ejs -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Phone Book</h3>
+  </div>
+  <div class="card-body">
+    <!-- Form untuk menambahkan kontak -->
+    <form action="/phonebook/add" method="post" class="mb-4">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label for="name">Nama</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama" required>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="form-group">
+            <label for="phone">Nomor Telepon</label>
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="Masukkan nomor telepon" required>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="submit">&nbsp;</label>
+            <button type="submit" class="btn btn-primary w-100">Tambah</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Tabel kontak menggunakan DataTables (server-side) -->
+    <div class="table-responsive">
+      <table id="phoneBookTable" class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th width="20">ID</th>
+            <th>Nama</th>
+            <th>Nomor Telepon</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data akan dimuat secara dinamis via AJAX -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#phoneBookTable').DataTable({
+      serverSide: true,
+      processing: true,
+      ajax: {
+        url: '/phonebook/data',
+        type: 'GET'
+      },
+      pageLength: 10,
+      lengthChange: false,
+      columns: [
+        { data: 'id' },
+        { data: 'name' },
+        { data: 'phone' }
+      ]
+    });
+  });
+</script>
