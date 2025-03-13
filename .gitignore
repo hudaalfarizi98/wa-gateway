@@ -23,3 +23,6 @@ yarn-error.log*
 composer.lock
 package-lock.json
 
+.wwebjs_auth/
+.wwebjs_cache/
+
