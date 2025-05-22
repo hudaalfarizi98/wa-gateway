@@ -1,0 +1,148 @@
+<!-- Tambahkan link untuk Select2 -->
+<link
+  href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Kirim Pesan Personal</h3>
+  </div>
+  <div class="card-body">
+    <% if (status === 'success') { %>
+    <div class="alert alert-success">Pesan berhasil dikirim.</div>
+    <% } else if (status === 'error') { %>
+    <div class="alert alert-danger">Terjadi kesalahan saat mengirim pesan.</div>
+    <% } %>
+    
+    <form action="/send-message" method="post" enctype="multipart/form-data">
+      <div class="form-group mb-3">
+        <label for="phone">Nomor WhatsApp</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <select class="form-control" id="country_code" name="country_code" required>
+              <option value="62">+62</option>
+            </select>
+          </div>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="phone" 
+            name="phone" 
+            placeholder="8xxxxxxxxxx"
+            required
+          />
+        </div>
+        <small class="form-text text-muted">Masukkan nomor tanpa tanda + atau 0 di depan</small>
+      </div>
+
+      <div class="form-group mb-3">
+        <label>Tipe Pesan</label>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="text"
+            value="text"
+            checked
+          />
+          <label class="form-check-label" for="text">Teks</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="image"
+            value="image"
+          />
+          <label class="form-check-label" for="image">Gambar</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="document"
+            value="document"
+          />
+          <label class="form-check-label" for="document">Dokumen</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="video"
+            value="video"
+          />
+          <label class="form-check-label" for="video">Video</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="voice"
+            value="voice"
+          />
+          <label class="form-check-label" for="voice">Voice Note</label>
+        </div>
+      </div>
+
+      <div class="form-group mb-3" id="mediaInput" style="display: none">
+        <label for="media">Upload Media</label>
+        <input 
+          type="file" 
+          class="form-control" 
+          style="height: max-content;" 
+          id="media" 
+          name="media"
+        />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="message">Pesan</label>
+        <textarea
+          class="form-control"
+          id="message"
+          name="message"
+          rows="5"
+          placeholder="Tulis pesan yang ingin dikirim"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Kirim Pesan</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Inisialisasi Select2 untuk kode negara
+    $("#country_code").select2({
+      width: '100px',
+      minimumResultsForSearch: Infinity
+    });
+
+    // Toggle media input
+    const messageTypeInputs = document.querySelectorAll(
+      'input[name="message_type"]'
+    );
+    const mediaInput = document.getElementById("mediaInput");
+
+    messageTypeInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        mediaInput.style.display = this.value !== "text" ? "block" : "none";
+        if (this.value !== "text") {
+          document.getElementById("media").required = true;
+        } else {
+          document.getElementById("media").required = false;
+        }
+      });
+    });
+  });
+</script>

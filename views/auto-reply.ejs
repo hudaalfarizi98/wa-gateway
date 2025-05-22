@@ -1,0 +1,373 @@
+<!-- Bootstrap CSS -->
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables -->
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"
+/>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Konfigurasi Auto Reply</h3>
+          <div class="card-tools">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-toggle="modal"
+              data-target="#addRuleModal"
+            >
+              Tambah Rule
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="rulesTable" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Keyword</th>
+                <th>Tipe Keyword</th>
+                <th>Tipe Pengirim</th>
+                <th>Pesan Balasan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% rules.forEach(function(rule) { %>
+              <tr>
+                <td><%= rule.keyword %></td>
+                <td><%= rule.keyword_type %></td>
+                <td><%= rule.sender_type %></td>
+                <td><%= rule.response_message %></td>
+                <td>
+                  <button
+                    class="btn btn-warning btn-sm edit-rule"
+                    data-id="<%= rule.id %>"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm delete-rule"
+                    data-id="<%= rule.id %>"
+                  >
+                    Hapus
+                  </button>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah Rule -->
+<div class="modal fade" id="addRuleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tambah Rule Auto Reply</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <form
+        action="/auto-reply/add"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Keyword</label>
+            <input type="text" class="form-control" name="keyword" required />
+          </div>
+          <div class="form-group">
+            <label>Tipe Keyword</label>
+            <select class="form-control" name="keyword_type" required>
+              <option value="equal">Equal (Sama Persis)</option>
+              <option value="contains">Contains (Mengandung)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tipe Pengirim</label>
+            <select class="form-control" name="sender_type" required>
+              <option value="all">Semua</option>
+              <option value="personal">Personal</option>
+              <option value="group">Grup</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tipe Balasan</label>
+            <select
+              class="form-control"
+              name="response_type"
+              id="responseType"
+              required
+            >
+              <option value="text">Text</option>
+              <option value="image">Gambar</option>
+              <option value="document">Dokumen</option>
+              <option value="video">Video</option>
+              <option value="voice">Voice Note</option>
+            </select>
+          </div>
+          <div class="form-group text-response">
+            <label>Pesan Balasan</label>
+            <textarea
+              class="form-control"
+              name="response_message"
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="form-group media-response" style="display: none">
+            <label>File Media</label>
+            <input
+              type="file"
+              class="form-control"
+              name="media"
+              accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+            />
+            <small class="form-text text-muted">
+              Ukuran maksimal file: 16MB<br />
+              Format yang didukung:<br />
+              - Gambar: JPG, PNG, GIF<br />
+              - Video: MP4<br />
+              - Dokumen: PDF, DOC, DOCX<br />
+              - Voice Note: MP3, OGG
+            </small>
+          </div>
+          <div class="form-group media-caption" style="display: none">
+            <label>Caption Media (Opsional)</label>
+            <textarea
+              class="form-control"
+              name="media_caption"
+              rows="2"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Tutup
+          </button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Rule -->
+<div class="modal fade" id="editRuleModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Rule Auto Reply</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <form
+        action="/auto-reply/update"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" name="rule_id" id="edit_rule_id" />
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Keyword</label>
+            <input
+              type="text"
+              class="form-control"
+              name="keyword"
+              id="edit_keyword"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Tipe Keyword</label>
+            <select
+              class="form-control"
+              name="keyword_type"
+              id="edit_keyword_type"
+              required
+            >
+              <option value="equal">Equal (Sama Persis)</option>
+              <option value="contains">Contains (Mengandung)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tipe Pengirim</label>
+            <select
+              class="form-control"
+              name="sender_type"
+              id="edit_sender_type"
+              required
+            >
+              <option value="all">Semua</option>
+              <option value="personal">Personal</option>
+              <option value="group">Grup</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tipe Balasan</label>
+            <select
+              class="form-control"
+              name="response_type"
+              id="edit_response_type"
+              required
+            >
+              <option value="text">Text</option>
+              <option value="image">Gambar</option>
+              <option value="document">Dokumen</option>
+              <option value="video">Video</option>
+              <option value="voice">Voice Note</option>
+            </select>
+          </div>
+          <div class="form-group text-response">
+            <label>Pesan Balasan</label>
+            <textarea
+              class="form-control"
+              name="response_message"
+              id="edit_response_message"
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="form-group media-response" style="display: none">
+            <label>File Media Baru (Opsional)</label>
+            <input
+              type="file"
+              class="form-control"
+              name="media"
+              accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+            />
+            <small class="form-text text-muted"
+              >Kosongkan jika tidak ingin mengubah media</small
+            >
+          </div>
+          <div class="form-group media-caption" style="display: none">
+            <label>Caption Media (Opsional)</label>
+            <textarea
+              class="form-control"
+              name="media_caption"
+              id="edit_media_caption"
+              rows="2"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Tutup
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Simpan Perubahan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Inisialisasi DataTable
+    $("#rulesTable").DataTable();
+
+    // Handler untuk hapus rule
+    $(".delete-rule").click(function () {
+      const id = $(this).data("id");
+      if (confirm("Apakah Anda yakin ingin menghapus rule ini?")) {
+        $.ajax({
+          url: `/auto-reply/delete/${id}`,
+          type: "DELETE",
+          success: function (result) {
+            if (result.success) {
+              location.reload();
+            } else {
+              alert("Gagal menghapus rule");
+            }
+          },
+        });
+      }
+    });
+
+    // Tambahkan handler untuk modal
+    $("#addRuleModal").on("shown.bs.modal", function () {
+      $(this).find('input[name="keyword"]').focus();
+    });
+
+    // Handler untuk edit rule
+    $(".edit-rule").click(function () {
+      const id = $(this).data("id");
+
+      // Ambil data rule yang akan diedit
+      $.get(`/auto-reply/${id}`, function (rule) {
+        $("#edit_rule_id").val(rule.id);
+        $("#edit_keyword").val(rule.keyword);
+        $("#edit_keyword_type").val(rule.keyword_type);
+        $("#edit_sender_type").val(rule.sender_type);
+        $("#edit_response_type").val(rule.response_type);
+        $("#edit_response_message").val(rule.response_message);
+        $("#edit_media_caption").val(rule.media_caption);
+
+        // Tampilkan/sembunyikan field sesuai tipe response
+        if (rule.response_type === "text") {
+          $(".text-response").show();
+          $(".media-response, .media-caption").hide();
+        } else {
+          $(".text-response").hide();
+          $(".media-response, .media-caption").show();
+        }
+
+        $("#editRuleModal").modal("show");
+      });
+    });
+
+    // Handler untuk perubahan tipe response di form edit
+    $("#edit_response_type").change(function () {
+      const type = $(this).val();
+      if (type === "text") {
+        $(".text-response").show();
+        $(".media-response, .media-caption").hide();
+        $("#edit_response_message").prop("required", true);
+      } else {
+        $(".text-response").hide();
+        $(".media-response, .media-caption").show();
+        $("#edit_response_message").prop("required", false);
+      }
+    });
+    // Handler untuk perubahan tipe response
+    $("#responseType").change(function () {
+      const type = $(this).val();
+      if (type === "text") {
+        $(".text-response").show();
+        $(".media-response, .media-caption").hide();
+        $('textarea[name="response_message"]').prop("required", true);
+        $('input[name="media"]').prop("required", false);
+      } else {
+        $(".text-response").hide();
+        $(".media-response, .media-caption").show();
+        $('textarea[name="response_message"]').prop("required", false);
+        $('input[name="media"]').prop("required", true);
+      }
+    });
+  });
+</script>

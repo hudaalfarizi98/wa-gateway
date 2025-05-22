@@ -1,30 +1,189 @@
-<!-- views/blast.ejs -->
+<!-- Tambahkan link untuk Select2 -->
+<link
+  href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<!-- views/blast.ejs -->
 <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Blast Pesan ke Phone Book</h3>
-    </div>
-    <div class="card-body">
-      <% if (status === 'done') { %>
-        <div class="alert alert-success">
-          Blast pesan selesai.
-        </div>
-      <% } else if (status === 'error') { %>
-        <div class="alert alert-danger">
-          Terjadi kesalahan saat blast pesan.
-        </div>
-      <% } else if (status === 'noContacts') { %>
-        <div class="alert alert-warning">
-          Tidak ada kontak di Phone Book.
-        </div>
-      <% } %>
-      <form action="/blast" method="post">
-        <div class="form-group">
-          <label for="message">Pesan</label>
-          <textarea class="form-control" id="message" name="message" rows="5" placeholder="Tulis pesan yang ingin dikirim ke semua kontak" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Blast Pesan</button>
-      </form>
-    </div>
+  <div class="card-header">
+    <h3 class="card-title">Blast Pesan ke Phone Book</h3>
   </div>
-  
+  <div class="card-body">
+    <% if (status === 'done') { %>
+    <div class="alert alert-success">Blast pesan selesai.</div>
+    <% } else if (status === 'error') { %>
+    <div class="alert alert-danger">Terjadi kesalahan saat blast pesan.</div>
+    <% } else if (status === 'noContacts') { %>
+    <div class="alert alert-warning">
+      Tidak ada kontak di grup yang dipilih.
+    </div>
+    <% } %>
+    <form action="/blast" method="post" enctype="multipart/form-data">
+      <div class="form-group mb-3">
+        <label for="group_id">Pilih Grup Kontak</label>
+        <select class="form-control" id="group_id" name="group_id" required>
+          <option value="">-- Pilih Grup --</option>
+          <% groups.forEach(function(group) { %>
+          <option value="<%= group.id %>"><%= group.name %></option>
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="form-group mb-3">
+        <label>Tipe Pengiriman</label>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="send_type"
+            id="immediately"
+            value="immediately"
+            checked
+          />
+          <label class="form-check-label" for="immediately">
+            Kirim Sekarang
+          </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="send_type"
+            id="schedule"
+            value="schedule"
+          />
+          <label class="form-check-label" for="schedule"> Jadwalkan </label>
+        </div>
+      </div>
+
+      <div class="form-group mb-3" id="scheduleDateTime" style="display: none">
+        <label for="schedule_time">Waktu Pengiriman</label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          id="schedule_time"
+          name="schedule_time"
+        />
+      </div>
+
+      <div class="form-group mb-3">
+        <label>Tipe Pesan</label>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="text"
+            value="text"
+            checked
+          />
+          <label class="form-check-label" for="text"> Teks </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="image"
+            value="image"
+          />
+          <label class="form-check-label" for="image"> Gambar </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="document"
+            value="document"
+          />
+          <label class="form-check-label" for="document"> Dokumen </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="video"
+            value="video"
+          />
+          <label class="form-check-label" for="video"> Video </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="message_type"
+            id="voice"
+            value="voice"
+          />
+          <label class="form-check-label" for="voice"> Voice Note </label>
+        </div>
+      </div>
+
+      <div class="form-group mb-3" id="mediaInput" style="display: none">
+        <label for="media">Upload Media</label>
+        <input type="file" class="form-control" style="height: max-content;" id="media" name="media" />
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="message">Pesan</label>
+        <textarea
+          class="form-control"
+          id="message"
+          name="message"
+          rows="5"
+          placeholder="Tulis pesan yang ingin dikirim ke semua kontak"
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Blast Pesan</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Toggle schedule datetime input
+    const sendTypeInputs = document.querySelectorAll('input[name="send_type"]');
+    const scheduleDateTime = document.getElementById("scheduleDateTime");
+
+    sendTypeInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        scheduleDateTime.style.display =
+          this.value === "schedule" ? "block" : "none";
+        if (this.value === "schedule") {
+          document.getElementById("schedule_time").required = true;
+        } else {
+          document.getElementById("schedule_time").required = false;
+        }
+      });
+    });
+
+    // Toggle media input
+    const messageTypeInputs = document.querySelectorAll(
+      'input[name="message_type"]'
+    );
+    const mediaInput = document.getElementById("mediaInput");
+
+    messageTypeInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        mediaInput.style.display = this.value !== "text" ? "block" : "none";
+        if (this.value !== "text") {
+          document.getElementById("media").required = true;
+        } else {
+          document.getElementById("media").required = false;
+        }
+      });
+    });
+  });
+
+  // Inisialisasi Select2 untuk kode negara
+  $("#group_id").select2({
+    width: "100%",
+    minimumResultsForSearch: 1, // Menonaktifkan pencarian
+  });
+</script>

@@ -1,48 +1,141 @@
+<style>
+  .main-sidebar.sidebar-dark-primary {
+    background-color: #075e54; /* Warna hijau tua WhatsApp */
+  }
+  .main-sidebar .brand-link {
+    border-bottom: 1px solid #128c7e; /* Garis bawah brand dengan hijau lebih muda */
+  }
+  .main-sidebar .brand-link .brand-text {
+    color: #ffffff; /* Teks brand putih */
+  }
+  .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+  .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #1faf54; /* Warna aktif hijau yang lebih kalem */
+    color: #ffffff; /* Teks aktif putih */
+  }
+  .sidebar .nav-item .nav-link p,
+  .sidebar .nav-item .nav-link i {
+    color: #e0e0e0; /* Warna teks dan ikon default agak putih */
+  }
+  .sidebar .nav-item:hover > .nav-link p,
+  .sidebar .nav-item:hover > .nav-link i {
+    color: #ffffff; /* Warna teks dan ikon saat hover menjadi putih terang */
+  }
+  .sidebar .nav-item:hover > .nav-link {
+    background-color: #128c7e; /* Background saat hover */
+  }
+  .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active i,
+  .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active p {
+    color: #ffffff; /* Pastikan ikon dan teks pada item aktif berwarna putih */
+  }
+  .logout-item {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #128c7e; /* Garis pemisah untuk logout */
+  }
+</style>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="/" class="brand-link">
-      <span class="brand-text font-weight-light">WhatsApp Gateway</span>
-    </a>
-    <div class="sidebar">
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column">
-          <li class="nav-item">
-            <a href="/" class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>">
-              <i class="nav-icon fas fa-home"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/qr" class="nav-link <%= activePage === 'qr' ? 'active' : '' %>">
-              <i class="nav-icon fas fa-qrcode"></i>
-              <p>QR Code Login</p>
-            </a>
-          </li>
-          <li class="nav-item">
+  <a href="/" class="brand-link">
+    <span class="brand-text font-weight-light">WhatsApp Gateway</span>
+  </a>
+  <div class="sidebar">
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column">
+        <li class="nav-item">
+          <a
+            href="/"
+            class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-home"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/qr"
+            class="nav-link <%= activePage === 'qr' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-qrcode"></i>
+            <p>QR Code Login</p>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
             <a href="/logs" class="nav-link <%= activePage === 'logs' ? 'active' : '' %>">
               <i class="nav-icon fas fa-clipboard-list"></i>
               <p>Logs</p>
             </a>
-          </li>
-          <li class="nav-item">
-            <a href="/phonebook" class="nav-link <%= activePage === 'phonebook' ? 'active' : '' %>">
-              <i class="nav-icon fas fa-address-book"></i>
-              <p>Phone Book</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/blast" class="nav-link <%= activePage === 'blast' ? 'active' : '' %>">
-              <i class="nav-icon fas fa-bullhorn"></i>
-              <p>Blast</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="/chats" class="nav-link <%= activePage === 'chat' ? 'active' : '' %>">
-              <i class="nav-icon fas fa-comments"></i>
-              <p>Chat</p>
-            </a>
-          </li>          
-        </ul>
-      </nav>
-    </div>
-  </aside>
-  
+          </li> -->
+        <li class="nav-item">
+          <a
+            href="/blast-logs"
+            class="nav-link <%= activePage === 'blast-logs' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-history"></i>
+            <p>Log Blast</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/phonebook"
+            class="nav-link <%= activePage === 'phonebook' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-address-book"></i>
+            <p>Phone Book</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/blast"
+            class="nav-link <%= activePage === 'blast' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-bullhorn"></i>
+            <p>Blast</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/auto-reply"
+            class="nav-link <%= activePage === 'auto-reply' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-bullhorn"></i>
+            <p>Auto Replay</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/send-message"
+            class="nav-link <%= activePage === 'send-message' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-paper-plane"></i>
+            <p>Kirim Pesan</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="/chats"
+            class="nav-link <%= activePage === 'chats' ? 'active' : '' %>"
+          >
+            <i class="nav-icon fas fa-comments"></i>
+            <p>Chats List</p>
+          </a>
+        </li>
+
+        <li
+          class="nav-item logout-item"
+          style="
+            margin-top: 20px;
+            border-top: 1px solid #4f5962;
+            padding-top: 10px;
+            bottom: 0;
+            position: fixed;
+          "
+        >
+          <a href="/logout" class="nav-link">
+            <i class="nav-icon fas fa-sign-out-alt"></i>
+            <p>Logout</p>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>
